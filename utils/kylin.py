@@ -258,6 +258,11 @@ class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-metho
         resp = self._request('PUT', url, json=payload, inner_session=user_session)
         return resp
 
+    def update_cube_engine(self, cube_name, engine_type):
+        url = '/cubes/{cube}/{engine}'.format(cube=cube_name, engine=engine_type)
+        resp = self._request('PUT', url)
+        return resp
+
     def build_segment(self, cube_name, start_time, end_time, force=False):
         """
         :param cube_name: the name of the cube to be built
@@ -611,7 +616,7 @@ class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-metho
             time.sleep(interval)
         return False
 
-    def execute_query(self, project_name, sql, offset=None, limit=None, backdoortoggles=None, user_session=False,
+    def execute_query(self, project_name, sql, cube_name=None, offset=None, limit=None, backdoortoggles=None, user_session=False,
                       timeout=60):
         url = '/query'
         payload = {
@@ -620,6 +625,8 @@ class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-metho
             'offset': offset,
             'limit': limit
         }
+        if cube_name:
+            backdoortoggles = {"backdoorToggles": {"DEBUG_TOGGLE_HIT_CUBE": cube_name}}
         if backdoortoggles:
             payload.update(backdoortoggles)
         resp = self._request('POST', url, json=payload, inner_session=user_session, timeout=timeout)
@@ -817,9 +824,8 @@ def connect(**conf):
     return KylinHttpClient(_host, _port)
 
 
-def setup_instance():
-    current_path = os.path.dirname(os.path.realpath(__file__))
-    instances_file = os.path.join(current_path, '../kylin_instances.yml')
+def setup_instance(file_name):
+    instances_file = os.path.join('kylin_instances/', file_name)
     stream = open(instances_file, 'r')
     for item in load(stream, Loader=loader.SafeLoader):
         host = item['host']

@@ -4,9 +4,9 @@ from utils import kylin
 
 class LoginTest:
 
-    client = kylin.setup_instance()
+    client = kylin.setup_instance("kylin_instance.yml")
 
-    @step("Authentication with user <test> and password <password>.")
+    @step("Authentication with user <user> and password <password>.")
     def assert_authentication_failed(self, user, password):
         resp = self.client.login(username=user, password=password)
         assert len(resp) == 0

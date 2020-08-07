@@ -6,7 +6,7 @@
      |User   |Password      |
      |-------|--------------|
      |ADMIN  |KYLIN         |
-     |ANALYST|1234567@kylin |
+     |ANALYST|ANALYST       |
      |MODELER|MODELER       |
 
 

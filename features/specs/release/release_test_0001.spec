@@ -1,57 +1,61 @@
 # Kylin Release Test
 
-## Prepare project
+## Prepare env
+* Get kylin instance with config file "kylin_instance.yml" and prepare data file from "release_test_0001.json"
 
-* Create project "release_test_0001_project"
+* Create project "release_test_0001_project" and load table "load_table_list"
 
-* Load table "load_table_list" from file "release_test_0001.json"
 
-## MR enigine
+## MR engine
 
-* Create model with "model_desc_data" in data file "release_test_0001.json"
+* Create model with "model_desc_data" in "release_test_0001_project"
 
-* Create cube with "cube_desc_data" in data file "release_test_0001.json", cube name is "release_test_0001_cube"
+* Create cube with "cube_desc_data" in "release_test_0001_project", cube name is "release_test_0001_cube"
 
-* Build segment from "2012-01-01 00:00:00" to "2013-01-01 00:00:00"
+* Build segment from "1325347200000" to "1356969600000" in "release_test_0001_cube"
 
-* Build segment from "2013-01-01 00:00:00" to "2014-01-30 00:00:00"
+* Build segment from "1356969600000" to "1391011200000" in "release_test_0001_cube"
 
-* Merge cube segment
+* Merge cube "release_test_0001_cube" segment from "1325347200000" to "1391011200000"
 
 
 ## SPARK engine
 
-* Clone cube "release_test_0001_cube" and name it "kylin_spark_cube", modify build engine to "SPARK"
+* Clone cube "release_test_0001_cube" and name it "kylin_spark_cube" in "release_test_0001_project", modify build engine to "SPARK"
 
-* Build segment from "2012-01-01 00:00:00" to "2013-01-01 00:00:00"
+* Build segment from "1325347200000" to "1356969600000" in "kylin_spark_cube"
 
-* Build segment from "2013-01-01 00:00:00" to "2014-01-30 00:00:00"
+* Build segment from "1356969600000" to "1391011200000" in "kylin_spark_cube"
 
-* Merge cube segment
+* Merge cube "kylin_spark_cube" segment from "1325347200000" to "1391011200000"
 
 
 ## FLINK engine
 
-* Clone cube "release_test_0001_cube" and name it "kylin_flink_cube", modify build engine to "FLINK"
+* Clone cube "release_test_0001_cube" and name it "kylin_flink_cube" in "release_test_0001_project", modify build engine to "FLINK"
 
-* Build segment from "2012-01-01 00:00:00" to "2013-01-01 00:00:00"
+* Build segment from "1325347200000" to "1356969600000" in "kylin_flink_cube"
 
-* Build segment from "2013-01-01 00:00:00" to "2014-01-30 00:00:00"
+* Build segment from "1356969600000" to "1391011200000" in "kylin_flink_cube"
 
-* Merge cube segment
+* Merge cube "kylin_flink_cube" segment from "1325347200000" to "1391011200000"
 
 
 ## Query cube and pushdown
 
-* Query SQL "" and specify "release_test_0001_cube" cube to query, compare result with ""
+* Query SQL "select count(*) from kylin_sales" and specify "release_test_0001_cube" cube to query in "release_test_0001_project", compare result with "10000"
 
-* Query SQL "" and specify "kylin_spark_cube" cube to query, compare result with ""
+* Query SQL "select count(*) from kylin_sales" and specify "kylin_spark_cube" cube to query in "release_test_0001_project", compare result with "10000"
 
-* Query SQL "" and specify "kylin_flink_cube" cube to query, compare result with ""
+* Query SQL "select count(*) from kylin_sales" and specify "kylin_flink_cube" cube to query in "release_test_0001_project", compare result with "10000"
 
-* Diasble all cube
+* Diasble cube "release_test_0001_cube"
 
-* Query SQL "" and return result successful
+* Diasble cube "kylin_spark_cube"
+
+* Diasble cube "kylin_flink_cube"
+
+* Query SQL "select count(*) from kylin_sales" in "release_test_0001_project" and pushdown
 
 
 

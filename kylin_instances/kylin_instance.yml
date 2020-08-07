@@ -1,6 +1,6 @@
 ---
 # All mode
 - host: 10.1.3.94
-  port: 7072
+  port: 7073
   hadoop_platform: HDP2.4
   deploy_mode: ALL
