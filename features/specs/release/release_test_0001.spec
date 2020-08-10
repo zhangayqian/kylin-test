@@ -49,13 +49,13 @@
 
 * Query SQL "select count(*) from kylin_sales" and specify "kylin_flink_cube" cube to query in "release_test_0001_project", compare result with "10000"
 
-* Diasble cube "release_test_0001_cube"
+* Disable cube "release_test_0001_cube"
 
-* Diasble cube "kylin_spark_cube"
+* Disable cube "kylin_spark_cube"
 
-* Diasble cube "kylin_flink_cube"
+* Disable cube "kylin_flink_cube"
 
-* Query SQL "select count(*) from kylin_sales" in "release_test_0001_project" and pushdown
+* Query SQL "select count(*) from kylin_sales" in "release_test_0001_project" and pushdown, compare result with "10000"
 
 
 

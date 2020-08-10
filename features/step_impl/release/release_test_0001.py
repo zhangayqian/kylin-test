@@ -2,14 +2,14 @@ from getgauge.python import step
 import os
 import json
 
-from utils import kylin
+from utils import util
 
 
 @step("Get kylin instance with config file <instance_file> and prepare data file from <data_file>")
 def prepare_env(instance_file, data_file):
     global client
     global data
-    client = kylin.setup_instance(instance_file)
+    client = util.setup_instance(instance_file)
     with open(os.path.join('data/', data_file), 'r') as f:
         data = json.load(f)
 
@@ -69,7 +69,7 @@ def query_cube_step(sql, cube_name, project, result):
     assert resp.get('pushDown') is False
 
 
-@step("Diasble cube <cube_name>")
+@step("Disable cube <cube_name>")
 def disable_cube_step(cube_name):
     resp = client.disable_cube(cube_name=cube_name)
     assert resp.get('status') == 'DISABLED'
@@ -80,5 +80,5 @@ def query_pushdown_step(sql, project, result):
     resp = client.execute_query(project_name=project, sql=sql)
     assert resp.get('isException') is False
     assert resp.get('results')[0][0] == result
-    assert resp.get('cube') is None
+    assert resp.get('cube') == ''
     assert resp.get('pushDown') is True

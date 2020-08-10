@@ -1,12 +1,9 @@
 import json
-import os
 import logging
 import time
 import random
 
 import requests
-
-from yaml import loader, load
 
 from .basic import BasicHttpClient
 
@@ -616,7 +613,8 @@ class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-metho
             time.sleep(interval)
         return False
 
-    def execute_query(self, project_name, sql, cube_name=None, offset=None, limit=None, backdoortoggles=None, user_session=False,
+    def execute_query(self, project_name, sql, cube_name=None, offset=None, limit=None, backdoortoggles=None,
+                      user_session=False,
                       timeout=60):
         url = '/query'
         payload = {
@@ -823,12 +821,3 @@ def connect(**conf):
 
     return KylinHttpClient(_host, _port)
 
-
-def setup_instance(file_name):
-    instances_file = os.path.join('kylin_instances/', file_name)
-    stream = open(instances_file, 'r')
-    for item in load(stream, Loader=loader.SafeLoader):
-        host = item['host']
-        port = item['port']
-
-    return connect(host=host, port=port)
