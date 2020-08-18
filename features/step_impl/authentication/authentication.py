@@ -1,7 +1,7 @@
 from time import sleep
 
 from getgauge.python import step
-from utils import util
+from kylin_utils import util
 
 
 class LoginTest:
@@ -35,4 +35,3 @@ class LoginTest:
             browser.find_element_by_id("password").clear()
             browser.find_element_by_id("password").send_keys(user[1])
             browser.find_element_by_class_name("bigger-110").click()
-

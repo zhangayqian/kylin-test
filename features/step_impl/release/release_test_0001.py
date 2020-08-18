@@ -1,16 +1,17 @@
-from getgauge.python import step
+from getgauge.python import step, before_scenario
 import os
 import json
 
-from utils import util
+from kylin_utils import util
 
 
-@step("Get kylin instance with config file <instance_file> and prepare data file from <data_file>")
-def prepare_env(instance_file, data_file):
+@before_scenario()
+def before_scenario_hooks():
     global client
     global data
-    client = util.setup_instance(instance_file)
-    with open(os.path.join('data/', data_file), 'r') as f:
+    client = util.setup_instance('kylin_instance.yml')
+    with open(os.path.join('data/release_test_0001', 'release_test_0001.json'),
+              'r') as f:
         data = json.load(f)
 
 
@@ -43,26 +44,35 @@ def create_cube_step(cube_desc, project, cube_name):
 
 @step("Build segment from <start_time> to <end_time> in <cube_name>")
 def build_first_segment_step(start_time, end_time, cube_name):
-    resp = client.build_segment(start_time=start_time, end_time=end_time, cube_name=cube_name)
+    resp = client.build_segment(start_time=start_time,
+                                end_time=end_time,
+                                cube_name=cube_name)
     assert client.await_job_finished(job_id=resp['uuid'], waiting_time=20)
 
 
 @step("Merge cube <cube_name> segment from <start_name> to <end_time>")
 def merge_segment_step(cube_name, start_time, end_time):
-    resp = client.merge_segment(cube_name=cube_name, start_time=start_time, end_time=end_time)
+    resp = client.merge_segment(cube_name=cube_name,
+                                start_time=start_time,
+                                end_time=end_time)
     assert client.await_job_finished(job_id=resp['uuid'], waiting_time=20)
 
 
 @step("Clone cube <old_cube_name> and name it <new_cube_name> in <project>, modify build engine to <engine>")
 def clone_cube_step(old_cube_name, new_cube_name, project, build_engine):
-    resp = client.clone_cube(cube_name=old_cube_name, new_cube_name=new_cube_name, project_name=project)
+    resp = client.clone_cube(cube_name=old_cube_name,
+                             new_cube_name=new_cube_name,
+                             project_name=project)
     assert resp.get('name') == new_cube_name
-    client.update_cube_engine(cube_name=new_cube_name, engine_type=build_engine)
+    client.update_cube_engine(cube_name=new_cube_name,
+                              engine_type=build_engine)
 
 
 @step("Query SQL <SQL> and specify <cube_name> cube to query in <project>, compare result with <result>")
 def query_cube_step(sql, cube_name, project, result):
-    resp = client.execute_query(cube_name=cube_name, project_name=project, sql=sql)
+    resp = client.execute_query(cube_name=cube_name,
+                                project_name=project,
+                                sql=sql)
     assert resp.get('isException') is False
     assert resp.get('results')[0][0] == result
     assert resp.get('cube') == 'CUBE[name=' + cube_name + ']'

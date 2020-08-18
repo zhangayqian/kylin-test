@@ -1,8 +1,7 @@
 # Kylin Release Test
 
 ## Prepare env
-* Get kylin instance with config file "kylin_instance.yml" and prepare data file from "release_test_0001.json"
-
+Tags: env
 * Create project "release_test_0001_project" and load table "load_table_list"
 
 

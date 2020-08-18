@@ -2,7 +2,7 @@ from selenium import webdriver
 from yaml import load, loader
 import os
 
-from utils import kylin
+from kylin_utils import kylin
 
 
 def setup_instance(file_name):
@@ -28,9 +28,9 @@ def setup_browser(browser_type):
         browser = webdriver.Chrome(executable_path="browser_driver/chromedriver")
 
     if browser_type == "firefox":
-        browser = webdriver.firefox(executable_path="browser_driver/geckodriver")
+        browser = webdriver.Firefox(executable_path="browser_driver/geckodriver")
 
     if browser_type == "safari":
-        browser = webdriver.safari(executable_path="browser_driver/safaridriver")
+        browser = webdriver.Safari(executable_path="browser_driver/safaridriver")
 
     return browser
