@@ -1,5 +1,5 @@
 # kylin-test
-Automated test code warehouse based on [gauge](https://docs.gauge.org/?os=macos&language=python&ide=vscode) for [Apache Kylin](https://github.com/apache/kylin).
+Automated test code repo based on [gauge](https://docs.gauge.org/?os=macos&language=python&ide=vscode) for [Apache Kylin](https://github.com/apache/kylin).
 
 ### IDE
 Gauge support IntelliJ IDEA and VSCode as development IDE.
@@ -49,5 +49,47 @@ pip install -r requirements.txt
 ```
 gauge run
 ```
+* Run specification or step or spec according tags, such as:
+```
+gauge run --tags 3.x
+```
 * Please refer to https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode learn more.
 
+## Tips
+
+A specification consists of different sections; some of which are mandatory and few are optional. The components of a specification are listed as follows:
+
+- Specification heading
+- Scenario
+- Step
+- Parameters
+- Tags
+- Comments
+
+#### Note
+
+Tags - optional, executable component when the specification is run
+Comments - optional, non-executable component when the specification is run
+
+### About tags
+
+Here, we stipulate that all test scenarios should have tags. Mandatory tags include 3.x and 4.x to indicate which versions are supported by the test scenario. Such as:
+```
+# Flink Engine
+Tags:3.x
+```
+```
+# Cube management
+Tags:3.x,4.x
+```
+You can put the tag in the specification heading, so that all scenarios in this specification will have this tag.
+You can also tag your own test spec to make it easier for you to run your own test cases.
+
+### About Project
+There are two project names already occupied, they are `generic_test_project` and `pushdown_test_project`. 
+  
+Every time you run this test, @befroe_suit method will be execute in advance to create `generic_test_project`.  And the model and cube in this project are universal, and the cube has been fully built. They include dimensions and measures as much as possible. When you need to use a built cube to perform tests, you may use it.
+
+`pushdown_test_project` used to compare sql query result. This is a empty project.
+
+Please refer to https://docs.gauge.org/writing-specifications.html?os=macos&language=python&ide=vscode learn more.
