@@ -4,7 +4,7 @@ from kylin_utils import equals
 
 
 @before_spec()
-def before_scenario_hook():
+def before_spec_hook():
     global client
     client = util.setup_instance("kylin_instance.yml")
 

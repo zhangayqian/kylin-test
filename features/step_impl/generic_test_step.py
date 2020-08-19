@@ -1,17 +1,20 @@
-from getgauge.python import step, before_scenario
+from getgauge.python import step
 import os
 import json
 
 from kylin_utils import util
 
 
-@before_scenario()
-def before_scenario_hooks():
+@step("Get kylin instance")
+def get_kylin_instance_with_config_file():
     global client
-    global data
     client = util.setup_instance('kylin_instance.yml')
-    with open(os.path.join('data/release_test_0001', 'release_test_0001.json'),
-              'r') as f:
+
+
+@step("prepare data file from <release_test_0001.json>")
+def prepare_data_file_from(file_name):
+    global data
+    with open(os.path.join('data', file_name), 'r') as f:
         data = json.load(f)
 
 
@@ -92,3 +95,4 @@ def query_pushdown_step(sql, project, result):
     assert resp.get('results')[0][0] == result
     assert resp.get('cube') == ''
     assert resp.get('pushDown') is True
+

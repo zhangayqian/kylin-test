@@ -1,5 +1,5 @@
 # Authentication Test
-
+Tags:3.x,4.x
 ## Prepare browser
 
 * Initialize "chrome" browser and connect to "kylin_instance.yml"

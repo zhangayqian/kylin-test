@@ -11,7 +11,7 @@ from .basic import BasicHttpClient
 class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-methods
     _base_url = 'http://{host}:{port}/kylin/api'
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, version):
         super().__init__(host, port)
 
         self._headers = {
@@ -19,6 +19,9 @@ class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-metho
         }
 
         self._base_url = self._base_url.format(host=self._host, port=self._port)
+        self.generic_project = "generic_test_project"
+        self.pushdown_project = "pushdown_test_project"
+        self.version = version
 
     def login(self, username, password):
         self._inner_session.request('POST', self._base_url + '/user/authentication', auth=(username, password))
@@ -818,6 +821,6 @@ class KylinHttpClient(BasicHttpClient):  # pylint: disable=too-many-public-metho
 def connect(**conf):
     _host = conf.get('host')
     _port = conf.get('port')
+    _version = conf.get('version')
 
-    return KylinHttpClient(_host, _port)
-
+    return KylinHttpClient(_host, _port, _version)

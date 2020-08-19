@@ -1,4 +1,5 @@
 import logging
+from kylin_utils import util
 
 _array_types = (list, tuple, set)
 _object_types = (dict, )
@@ -179,52 +180,25 @@ def dataset_equals(expect,
     return True
 
 
-def if_project_exists(project, kylin_client):
-    exists = 0
-    resp = kylin_client.list_projects()
-    for project_info in resp:
-        if project_info.get('name') == project:
-            exists = 1
-    return exists
-
-
-def if_table_exits(project, table_name, kylin_client):
-    exits = 0
-    resp = kylin_client.list_hive_tables(project_name=project)
-    if resp is not None:
-        for table_info in resp:
-            if table_info.get('name') == table_name:
-                exits = 1
-    return exits
-
-
-def compare_sql_result(sql,
-                       project,
-                       kylin_client,
-                       pushdown_project='test_pushdown_project',
-                       cube=None):
-    if not if_project_exists(project=pushdown_project,
-                             kylin_client=kylin_client):
+def compare_sql_result(sql, project, kylin_client, cube=None):
+    pushdown_project = kylin_client.pushdown_project
+    if not util.if_project_exists(kylin_client=kylin_client, project=pushdown_project):
         kylin_client.create_project(project_name=pushdown_project)
 
     hive_tables = kylin_client.list_hive_tables(project_name=project)
     if hive_tables is not None:
         for table_info in kylin_client.list_hive_tables(project_name=project):
-            if not if_table_exits(project=pushdown_project,
-                                  table_name=table_info.get('name'),
-                                  kylin_client=kylin_client
-                                  ) and table_info.get('source_type') == 0:
-                kylin_client.load_table(
-                    project_name=pushdown_project,
-                    tables='{database}.{table}'.format(
-                        database=table_info.get('database'),
-                        table=table_info.get('name')))
+            if table_info.get('source_type') == 0:
+                kylin_client.load_table(project_name=pushdown_project,
+                                        tables='{database}.{table}'.format(
+                                            database=table_info.get('database'),
+                                            table=table_info.get('name')))
     kylin_resp = kylin_client.execute_query(cube_name=cube,
                                             project_name=project,
                                             sql=sql)
     assert kylin_resp.get('isException') is False
-    pushdown_resp = kylin_client.execute_query(project_name=pushdown_project,
-                                               sql=sql)
+
+    pushdown_resp = kylin_client.execute_query(project_name=pushdown_project, sql=sql)
     assert pushdown_resp.get('isException') is False
 
     assert query_result_equals(kylin_resp, pushdown_resp)
